@@ -1,0 +1,17 @@
+#!/bin/zsh
+#
+# .zshenv.local.example: Local environment variables template
+# Copy this file to .zshenv.local and fill in your values
+# .zshenv.local is ignored by git
+#
+
+# CLAUDE CODE
+export ANTHROPIC_BASE_URL=https://api.aicoding.sh
+export ANTHROPIC_AUTH_TOKEN=your-token-here
+# 拉长客户端等待，避免上游超时导致前端先断
+export API_TIMEOUT_MS=600000
+# 关闭非必要流量（遥测/错误上报/bug 命令/自动更新）
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+# 设置默认模型, 防止使用 Opus 积分消耗过快
+export ANTHROPIC_MODEL=claude-sonnet-4-20250514
+export ANTHROPIC_SMALL_FAST_MODEL=claude-3-5-haiku-20241022
