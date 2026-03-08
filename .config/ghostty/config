@@ -1,82 +1,194 @@
-# This is the configuration file for Ghostty.
-#
-# This template file has been automatically created at the following
-# path since Ghostty couldn't find any existing config files on your system:
-#
-#   /Users/ian/Library/Application Support/com.mitchellh.ghostty/config
-#
-# The template does not set any default options, since Ghostty ships
-# with sensible defaults for all options. Users should only need to set
-# options that they want to change from the default.
-#
-# Run `ghostty +show-config --default --docs` to view a list of
-# all available config options and their default values.
-#
-# Additionally, each config option is also explained in detail
-# on Ghostty's website, at https://ghostty.org/docs/config.
-#
-# Ghostty can reload the configuration while running by using the menu
-# options or the bound key (default: Command + Shift + comma on macOS and
-# Control + Shift + comma on other platforms). Not all config options can be
-# reloaded while running; some only apply to new windows and others may require
-# a full restart to take effect.
+# Ghostty Terminal Configuration
+# https://ghostty.org/docs/config
 
-# Config syntax crash course
-# ==========================
-# # The config file consists of simple key-value pairs,
-# # separated by equals signs.
-# font-family = Iosevka
-# window-padding-x = 2
-#
-# # Spacing around the equals sign does not matter.
-# # All of these are identical:
-# key=value
-# key= value
-# key =value
-# key = value
-#
-# # Any line beginning with a # is a comment. It's not possible to put
-# # a comment after a config option, since it would be interpreted as a
-# # part of the value. For example, this will have a value of "#123abc":
-# background = #123abc
-#
-# # Empty values are used to reset config keys to default.
-# key =
-#
-# # Some config options have unique syntaxes for their value,
-# # which is explained in the docs for that config option.
-# # Just for example:
-# resize-overlay-duration = 4s 200ms
+# ============================================================================
+# 主题和颜色
+# ============================================================================
 
-## macos
+# 主题选择（可以根据系统自动切换）
+# theme = light:tokyonight-day,dark:tokyonight-moon
+theme = tokyonight-moon
 
-macos-icon = xray
-# window-title-font-family = Hack Nerd Font Mono Regular
-# copy-on-select = true
+# 其他推荐主题：
+# theme = catppuccin-mocha
+# theme = nord
+# theme = dracula
+# theme = gruvbox-dark
 
-## Colors
-# theme = light: tokyonight Day,dark:tokyonight
-theme = tokyonight moon
-# theme = Tomorrow Night Burns
-# theme = Catppuccin Mocha
-
-
-# 隐藏标题栏
-# window-decoration = none
-# 透明度 
+# 背景透明度（0.0-1.0）
 background-opacity = 0.95
-# 设置边距
-window-padding-x = 10
-window-padding-y = 10
-## Fonts
-font-size = 12
-font-thicken = true
-# font-family = iraCode
-# font-family = Terminess Nerd Font Mono
-# font-family = 3270 Nerd Font Mono
-# font-family = JetBrainsMono Nerd Font Mono
-# font-family = Terminess Nerd Font
-# font-family = ProggyClean Nerd Font
-font-family = Iosevka Term
 
-window-inherit-font-size       = true
+# 背景模糊效果（macOS）
+background-blur-radius = 20
+
+# ============================================================================
+# 字体配置
+# ============================================================================
+
+# 字体家族
+font-family = "Iosevka Term"
+
+# 备选字体（如果主字体不可用）
+# font-family = "JetBrainsMono Nerd Font Mono"
+# font-family = "FiraCode Nerd Font Mono"
+# font-family = "Hack Nerd Font Mono"
+# font-family = "CaskaydiaCove Nerd Font Mono"
+
+# 字体大小
+font-size = 13
+
+# 字体加粗
+font-thicken = true
+
+# 字体特性（连字等）
+font-feature = -calt
+font-feature = -liga
+
+# 继承字体大小到新窗口
+window-inherit-font-size = true
+
+# ============================================================================
+# 窗口外观
+# ============================================================================
+
+# 窗口内边距
+window-padding-x = 12
+window-padding-y = 12
+
+# 窗口装饰（none = 无标题栏，client-side = 自定义标题栏）
+# window-decoration = none
+
+# 窗口标题格式
+window-title-font-family = "SF Pro Display"
+# window-title = "#{title}"
+
+# 初始窗口大小
+window-width = 120
+window-height = 35
+
+# 窗口保存状态
+window-save-state = always
+
+# ============================================================================
+# macOS 特定设置
+# ============================================================================
+
+# 应用图标
+macos-icon = xray
+
+# 标题栏样式
+macos-titlebar-style = tabs
+
+# 选中即复制
+# copy-on-select = clipboard
+
+# 非原生全屏模式
+macos-non-native-fullscreen = true
+
+# 窗口阴影
+macos-window-shadow = true
+
+# ============================================================================
+# 光标配置
+# ============================================================================
+
+# 光标样式（block, bar, underline）
+cursor-style = block
+
+# 光标闪烁
+cursor-style-blink = true
+
+# 光标颜色
+# cursor-color = #c0caf5
+
+# ============================================================================
+# 滚动和性能
+# ============================================================================
+
+# 滚动回溯行数
+scrollback-limit = 10000
+
+# 鼠标隐藏延迟
+mouse-hide-while-typing = true
+
+# ============================================================================
+# Shell 集成
+# ============================================================================
+
+# Shell 集成模式
+shell-integration = detect
+
+# Shell 集成功能
+shell-integration-features = cursor,sudo,title
+
+# ============================================================================
+# 快捷键
+# ============================================================================
+
+# 新建标签页
+keybind = cmd+t=new_tab
+
+# 关闭标签页
+keybind = cmd+w=close_surface
+
+# 切换标签页
+keybind = cmd+1=goto_tab:1
+keybind = cmd+2=goto_tab:2
+keybind = cmd+3=goto_tab:3
+keybind = cmd+4=goto_tab:4
+keybind = cmd+5=goto_tab:5
+keybind = cmd+6=goto_tab:6
+keybind = cmd+7=goto_tab:7
+keybind = cmd+8=goto_tab:8
+keybind = cmd+9=goto_tab:9
+
+# 分屏
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+
+# 切换分屏
+keybind = cmd+h=goto_split:left
+keybind = cmd+j=goto_split:bottom
+keybind = cmd+k=goto_split:top
+keybind = cmd+l=goto_split:right
+
+# 调整分屏大小
+keybind = cmd+ctrl+h=resize_split:left,10
+keybind = cmd+ctrl+j=resize_split:down,10
+keybind = cmd+ctrl+k=resize_split:up,10
+keybind = cmd+ctrl+l=resize_split:right,10
+
+# 字体大小调整
+keybind = cmd+plus=increase_font_size:1
+keybind = cmd+minus=decrease_font_size:1
+keybind = cmd+0=reset_font_size
+
+# 清屏
+keybind = cmd+k=clear_screen
+
+# 重新加载配置
+keybind = cmd+shift+comma=reload_config
+
+# ============================================================================
+# 其他设置
+# ============================================================================
+
+# 复制时去除尾随空格
+copy-on-select = false
+
+# 链接点击
+link-url = true
+
+# 确认退出
+confirm-close-surface = false
+
+# 自动更新
+auto-update = check
+
+# 窗口步长（调整大小时）
+window-step-resize = true
+
+# 调整大小覆盖层
+resize-overlay = always
+resize-overlay-position = center
+resize-overlay-duration = 1s

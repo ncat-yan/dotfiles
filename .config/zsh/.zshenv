@@ -29,3 +29,7 @@ export GHPATH="$XDG_DATA_HOME"/go
 
 # Load local environment variables (not tracked in git)
 [ -f "$ZDOTDIR/.zshenv.local" ] && source "$ZDOTDIR/.zshenv.local"
+
+# Load host-specific configuration
+HOSTNAME=$(hostname -s)
+[ -f "$ZDOTDIR/hosts/${HOSTNAME}.zsh" ] && source "$ZDOTDIR/hosts/${HOSTNAME}.zsh"

@@ -61,6 +61,12 @@ exec zsh
 - `.zprofile` - Homebrew 初始化
 - `.zshrc` - Oh My Zsh 配置
 - `custom/` - 自定义别名、插件、主题
+- `hosts/` - 主机特定配置（见下方"多主机同步"）
+
+**配置加载顺序：**
+1. `.zshenv` - 通用配置
+2. `.zshenv.local` - 本地敏感信息
+3. `hosts/$(hostname -s).zsh` - 主机特定配置
 
 **Oh My Zsh 插件：**
 - git, aliases, autojump, history
@@ -146,6 +152,74 @@ git push
 cp ~/.config/zsh/.zshenv.local.example ~/.config/zsh/.zshenv.local
 vim ~/.config/zsh/.zshenv.local  # 填入真实的 tokens
 ```
+
+## 多主机同步
+
+本仓库支持多台主机的配置同步，通过主机特定配置文件实现。
+
+### 工作原理
+
+`.zshenv` 会自动检测主机名并加载对应的配置：
+
+```bash
+HOSTNAME=$(hostname -s)
+[ -f "$ZDOTDIR/hosts/${HOSTNAME}.zsh" ] && source "$ZDOTDIR/hosts/${HOSTNAME}.zsh"
+```
+
+### 配置优先级
+
+1. `.zshenv` - 所有主机通用配置
+2. `.zshenv.local` - 当前主机敏感信息（不提交）
+3. `hosts/$(hostname -s).zsh` - 当前主机特定配置（提交）
+
+### 新主机初始设置
+
+```bash
+# 1. 克隆并安装
+git clone <your-repo> ~/.dotfiles
+cd ~/.dotfiles
+./install.sh
+
+# 2. 配置敏感信息
+cp ~/.config/zsh/.zshenv.local.example ~/.config/zsh/.zshenv.local
+vim ~/.config/zsh/.zshenv.local
+
+# 3. 创建主机特定配置
+cd ~/.dotfiles/.config/zsh/hosts
+cp example.zsh $(hostname -s).zsh
+vim $(hostname -s).zsh
+
+# 4. 提交主机配置
+cd ~/.dotfiles
+git add .config/zsh/hosts/$(hostname -s).zsh
+git commit -m "添加 $(hostname -s) 主机配置"
+git push
+```
+
+### 主机特定配置示例
+
+**MacBook.zsh**（便携式 Mac）：
+```bash
+# 开发路径
+alias work="cd ~/Projects/work"
+alias personal="cd ~/Projects/personal"
+```
+
+**Desktop.zsh**（台式机）：
+```bash
+# 不同的工作路径
+alias work="cd /mnt/data/projects"
+export DISPLAY=:0
+```
+
+**Server.zsh**（服务器）：
+```bash
+# 代理设置
+export HTTP_PROXY="http://proxy.company.com:8080"
+alias logs="cd /var/log"
+```
+
+详细说明请查看 [.config/zsh/hosts/README.md](.config/zsh/hosts/README.md)。
 
 ## XDG 目录规范
 
