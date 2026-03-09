@@ -6,20 +6,14 @@
 # ============================================================================
 
 # 主题选择（可以根据系统自动切换）
-# theme = light:tokyonight-day,dark:tokyonight-moon
-theme = tokyonight-moon
-
-# 其他推荐主题：
-# theme = catppuccin-mocha
-# theme = nord
-# theme = dracula
-# theme = gruvbox-dark
+# theme = light:Tokyonight Day,dark:Tokyonight Moon
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
 # 背景透明度（0.0-1.0）
-background-opacity = 0.95
+background-opacity = 0.85
 
 # 背景模糊效果（macOS）
-background-blur-radius = 20
+background-blur-radius = 25
 
 # ============================================================================
 # 字体配置
@@ -27,15 +21,14 @@ background-blur-radius = 20
 
 # 字体家族
 font-family = "Iosevka Term"
-
-# 备选字体（如果主字体不可用）
-# font-family = "JetBrainsMono Nerd Font Mono"
-# font-family = "FiraCode Nerd Font Mono"
-# font-family = "Hack Nerd Font Mono"
+font-family-bold = "Iosevka Term Medium"
+font-family-bold-italic = "Iosevka Term Medium Italic"
+font-family = "霞鹜文楷等宽 Light"
+font-family = "Hack Nerd Font Mono"
 # font-family = "CaskaydiaCove Nerd Font Mono"
 
 # 字体大小
-font-size = 13
+font-size = 12
 
 # 字体加粗
 font-thicken = true
@@ -45,21 +38,22 @@ font-feature = -calt
 font-feature = -liga
 
 # 继承字体大小到新窗口
-window-inherit-font-size = true
+# window-inherit-font-size = true
+adjust-cell-width = 0%
 
 # ============================================================================
 # 窗口外观
 # ============================================================================
 
 # 窗口内边距
-window-padding-x = 12
-window-padding-y = 12
+window-padding-x = 15
+window-padding-y = 15
 
-# 窗口装饰（none = 无标题栏，client-side = 自定义标题栏）
-# window-decoration = none
+# 窗口装饰（none = 无标题栏，client = 自定义标题栏,auto,server）
+window-decoration = auto
 
 # 窗口标题格式
-window-title-font-family = "SF Pro Display"
+# window-title-font-family = "SF Pro Display"
 # window-title = "#{title}"
 
 # 初始窗口大小
@@ -80,7 +74,7 @@ macos-icon = xray
 macos-titlebar-style = tabs
 
 # 选中即复制
-# copy-on-select = clipboard
+copy-on-select = clipboard
 
 # 非原生全屏模式
 macos-non-native-fullscreen = true
@@ -93,7 +87,7 @@ macos-window-shadow = true
 # ============================================================================
 
 # 光标样式（block, bar, underline）
-cursor-style = block
+cursor-style = underline
 
 # 光标闪烁
 cursor-style-blink = true
@@ -169,6 +163,9 @@ keybind = cmd+k=clear_screen
 # 重新加载配置
 keybind = cmd+shift+comma=reload_config
 
+# 切换快捷终端
+keybind = global:cmd+backquote=toggle_quick_terminal
+
 # ============================================================================
 # 其他设置
 # ============================================================================
@@ -192,3 +189,5 @@ window-step-resize = true
 resize-overlay = always
 resize-overlay-position = center
 resize-overlay-duration = 1s
+
+
