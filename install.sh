@@ -15,6 +15,38 @@ NC='\033[0m' # No Color
 # 获取 dotfiles 目录的绝对路径
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# 默认选项
+SKIP_BREW=false
+SKIP_OMZ=false
+
+# 解析命令行参数
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --skip-brew)
+            SKIP_BREW=true
+            shift
+            ;;
+        --skip-omz)
+            SKIP_OMZ=true
+            shift
+            ;;
+        --help|-h)
+            echo "用法: ./install.sh [选项]"
+            echo ""
+            echo "选项:"
+            echo "  --skip-brew  跳过 Homebrew 安装和包管理"
+            echo "  --skip-omz   跳过 Oh My Zsh 安装"
+            echo "  --help, -h   显示此帮助信息"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}未知选项: $1${NC}"
+            echo "运行 ./install.sh --help 查看帮助"
+            exit 1
+            ;;
+    esac
+done
+
 echo -e "${GREEN}=== Dotfiles 安装脚本 ===${NC}"
 echo "Dotfiles 目录: $DOTFILES_DIR"
 echo ""
@@ -31,11 +63,30 @@ echo ""
 # 2. 创建符号链接
 echo -e "${YELLOW}[2/6] 创建配置文件符号链接...${NC}"
 
+# ~/.zshenv → dotfiles .config/zsh/.zshenv
+if [ -L "$HOME/.zshenv" ] && [ "$(readlink "$HOME/.zshenv")" = "$DOTFILES_DIR/.config/zsh/.zshenv" ]; then
+    echo -e "  ${GREEN}✓${NC} 链接: ~/.zshenv (已存在)"
+elif [ -e "$HOME/.zshenv" ] && [ ! -L "$HOME/.zshenv" ]; then
+    backup="$HOME/.zshenv.backup.$(date +%Y%m%d_%H%M%S)"
+    echo "  备份: ~/.zshenv -> $backup"
+    mv "$HOME/.zshenv" "$backup"
+    ln -sf "$DOTFILES_DIR/.config/zsh/.zshenv" "$HOME/.zshenv"
+    echo -e "  ${GREEN}✓${NC} 链接: ~/.zshenv"
+else
+    ln -sf "$DOTFILES_DIR/.config/zsh/.zshenv" "$HOME/.zshenv"
+    echo -e "  ${GREEN}✓${NC} 链接: ~/.zshenv"
+fi
+
 # 备份并链接 .config 目录下的配置
 for config_dir in "$DOTFILES_DIR/.config"/*; do
     if [ -d "$config_dir" ]; then
         config_name=$(basename "$config_dir")
         target="$HOME/.config/$config_name"
+
+        if [ -L "$target" ] && [ "$(readlink "$target")" = "$config_dir" ]; then
+            echo -e "  ${GREEN}✓${NC} 链接: $config_name (已存在)"
+            continue
+        fi
 
         # 如果目标已存在且不是符号链接，则备份
         if [ -e "$target" ] && [ ! -L "$target" ]; then
@@ -45,15 +96,25 @@ for config_dir in "$DOTFILES_DIR/.config"/*; do
         fi
 
         # 删除旧的符号链接（如果存在）
-        if [ -L "$target" ]; then
-            rm "$target"
-        fi
+        [ -L "$target" ] && rm "$target"
 
-        # 创建新的符号链接
         ln -sf "$config_dir" "$target"
         echo -e "  ${GREEN}✓${NC} 链接: $config_name"
     fi
 done
+
+# 链接 starship.toml（单文件配置）
+if [ -f "$DOTFILES_DIR/.config/starship.toml" ]; then
+    target="$HOME/.config/starship.toml"
+    if [ -L "$target" ] && [ "$(readlink "$target")" = "$DOTFILES_DIR/.config/starship.toml" ]; then
+        echo -e "  ${GREEN}✓${NC} 链接: starship.toml (已存在)"
+    else
+        [ -e "$target" ] && [ ! -L "$target" ] && mv "$target" "$target.backup.$(date +%Y%m%d_%H%M%S)"
+        ln -sf "$DOTFILES_DIR/.config/starship.toml" "$target"
+        echo -e "  ${GREEN}✓${NC} 链接: starship.toml"
+    fi
+fi
+
 echo -e "${GREEN}✓ 符号链接创建完成${NC}"
 echo ""
 
@@ -69,54 +130,46 @@ else
 fi
 echo ""
 
-# 4. 安装 Homebrew（如果未安装）
-echo -e "${YELLOW}[4/6] 检查 Homebrew...${NC}"
-if ! command -v brew &> /dev/null; then
-    echo "  Homebrew 未安装，正在安装..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo -e "  ${GREEN}✓${NC} Homebrew 安装完成"
+# 4. 安装 Homebrew
+if [ "$SKIP_BREW" = true ]; then
+    echo -e "${YELLOW}[4/6] 跳过 Homebrew (--skip-brew)${NC}"
 else
-    echo -e "  ${GREEN}✓${NC} Homebrew 已安装"
-fi
+    echo -e "${YELLOW}[4/6] 检查 Homebrew...${NC}"
+    if ! command -v brew &> /dev/null; then
+        echo "  Homebrew 未安装，正在安装..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo -e "  ${GREEN}✓${NC} Homebrew 安装完成"
+    else
+        echo -e "  ${GREEN}✓${NC} Homebrew 已安装"
+    fi
 
-# 安装 Brewfile 中的包
-if [ -f "$DOTFILES_DIR/Brewfile" ]; then
-    echo "  正在从 Brewfile 安装包..."
-    brew bundle --file="$DOTFILES_DIR/Brewfile"
-    echo -e "  ${GREEN}✓${NC} Homebrew 包安装完成"
+    if [ -f "$DOTFILES_DIR/Brewfile" ]; then
+        echo "  正在从 Brewfile 安装包..."
+        brew bundle --file="$DOTFILES_DIR/Brewfile"
+        echo -e "  ${GREEN}✓${NC} Homebrew 包安装完成"
+    fi
 fi
 echo ""
 
-# 5. 安装 Oh My Zsh
-echo -e "${YELLOW}[5/6] 检查 Oh My Zsh...${NC}"
-ZSH_DIR="$HOME/.local/share/.oh-my-zsh"
-if [ ! -d "$ZSH_DIR" ]; then
-    echo "  正在安装 Oh My Zsh..."
-    export ZSH="$ZSH_DIR"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
-    echo -e "  ${GREEN}✓${NC} Oh My Zsh 安装完成"
+# 5. 安装 Oh My Zsh 和插件
+if [ "$SKIP_OMZ" = true ]; then
+    echo -e "${YELLOW}[5/6] 跳过 Oh My Zsh (--skip-omz)${NC}"
 else
-    echo -e "  ${GREEN}✓${NC} Oh My Zsh 已安装"
-fi
+    echo -e "${YELLOW}[5/6] 检查 Oh My Zsh...${NC}"
+    ZSH_DIR="$HOME/.local/share/.oh-my-zsh"
+    if [ ! -d "$ZSH_DIR" ]; then
+        echo "  正在安装 Oh My Zsh..."
+        export ZSH="$ZSH_DIR"
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
+        echo -e "  ${GREEN}✓${NC} Oh My Zsh 安装完成"
+    else
+        echo -e "  ${GREEN}✓${NC} Oh My Zsh 已安装"
+    fi
 
-# 安装 Oh My Zsh 插件
-echo "  正在安装 Oh My Zsh 插件..."
-CUSTOM_PLUGINS="$ZSH_DIR/custom/plugins"
-
-# zsh-autosuggestions
-if [ ! -d "$CUSTOM_PLUGINS/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$CUSTOM_PLUGINS/zsh-autosuggestions"
-    echo -e "  ${GREEN}✓${NC} zsh-autosuggestions 安装完成"
-else
-    echo -e "  ${GREEN}✓${NC} zsh-autosuggestions 已安装"
-fi
-
-# zsh-syntax-highlighting
-if [ ! -d "$CUSTOM_PLUGINS/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$CUSTOM_PLUGINS/zsh-syntax-highlighting"
-    echo -e "  ${GREEN}✓${NC} zsh-syntax-highlighting 安装完成"
-else
-    echo -e "  ${GREEN}✓${NC} zsh-syntax-highlighting 已安装"
+    # 通过 submodule 安装插件
+    echo "  正在初始化 zsh 插件 (git submodule)..."
+    git -C "$DOTFILES_DIR" submodule update --init
+    echo -e "  ${GREEN}✓${NC} 插件初始化完成"
 fi
 echo ""
 

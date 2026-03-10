@@ -33,3 +33,6 @@ Temporary Items
 # Backup files
 *.bak
 *.backup
+
+# Claude Code
+.claude/

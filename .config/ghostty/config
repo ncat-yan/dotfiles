@@ -6,8 +6,8 @@
 # ============================================================================
 
 # 主题选择（可以根据系统自动切换）
-# theme = light:Tokyonight Day,dark:Tokyonight Moon
-theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+theme = light:Tokyonight Day,dark:Tokyonight Night
+# theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
 # 背景透明度（0.0-1.0）
 background-opacity = 0.85
@@ -24,7 +24,8 @@ font-family = "Iosevka Term"
 font-family-bold = "Iosevka Term Medium"
 font-family-bold-italic = "Iosevka Term Medium Italic"
 font-family = "霞鹜文楷等宽 Light"
-font-family = "Hack Nerd Font Mono"
+# font-family = "Hack Nerd Font Mono"
+font-family = "JetBrains Mono Nerd Font"
 # font-family = "CaskaydiaCove Nerd Font Mono"
 
 # 字体大小
@@ -164,7 +165,12 @@ keybind = cmd+k=clear_screen
 keybind = cmd+shift+comma=reload_config
 
 # 切换快捷终端
-keybind = global:cmd+backquote=toggle_quick_terminal
+# keybind = global:option+backquote=toggle_quick_terminal
+# keybind = global:cmd+option+backquote=toggle_quick_terminal
+keybind = global:unconsumed:cmd+shift+grave_accent=toggle_quick_terminal
+
+# cmd+h
+keybind = cmd+h=toggle_visibility
 
 # ============================================================================
 # 其他设置

@@ -1,4 +1,4 @@
-alias reload !='. $HOME/.zshrc'
+alias reload='source $ZDOTDIR/.zshrc'
 
 alias cls='clear'
 

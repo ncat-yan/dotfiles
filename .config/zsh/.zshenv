@@ -21,7 +21,7 @@ export ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME"/npm/npmrc
 
 # python
-# export PYTHONSTARTUP="$XDG_CONFIG_HOME"/python/pythonrc
+export PYTHONSTARTUP="$XDG_CONFIG_HOME"/python/pythonrc
 export PYTHON_HISTORY="$XDG_STATE_HOME"/python/python_history
 
 # golang
